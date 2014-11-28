@@ -1,0 +1,11 @@
+HOST="broadworksXSP.com";
+PORT="2208";
+OCI_LOGINID="fffilimonov";
+OCI_PASSWORD="123456";
+TIMEOUT="0.2";
+
+ENT="enterprise";
+GROUP="group";
+DEVPROF="deviceprofile";
+DOMAIN="voip.broad.com";
+SERVICEPACKS="BASE;BUSINESS LINE;RESIDENTIAL";
