@@ -39,7 +39,7 @@ HPASS=`echo -n $OCI_PASSWORD | sha1sum | gawk '{print $1}'`;
 RESPONSE=`echo -n "$NONCE:$HPASS" | md5sum| gawk '{print $1}'`;
 
 #Send login
-cat xml/login.xml.tmpl | sed "s/CHANGEmePASS/"$RESPONSE"/" > xml/login.xml;
+cat xml/login.xml.tmpl | sed "s/CHANGEmePASS/"$RESPONSE"/;s/CHANGEmeUSER/"$OCI_LOGINID"/" > xml/login.xml;
 cat xml/head.xml >&3;
 cat xml/login.xml >&3;
 cat xml/botom.xml >&3;
