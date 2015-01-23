@@ -6,6 +6,8 @@ TIMEOUT="0.2";
 
 ENT="enterprise";
 GROUP="group";
-DEVPROF="deviceprofile";
+DEVPROFNAME="deviceprofile";
+DEVPROFLEVEL="Service Provider";
+#DEVPROFLEVEL="Group";
 DOMAIN="voip.broad.com";
 SERVICEPACKS="BASE;BUSINESS LINE;RESIDENTIAL";

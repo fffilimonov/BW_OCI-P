@@ -44,7 +44,8 @@ cat $command.tmpl |\
  s/CHANGEmePORT/"$USERID"/;\
  s/CHANGEmePHONE/"$PHONE"/;\
  s/CHANGEmeDMN/"$DOMAIN"/;\
- s/CHANGEmeDEVP/"$DEVPROF"/;\
+ s/CHANGEmeDEVP/"$DEVPROFNAME"/;\
+ s/CHANGEmeDEVL/"$DEVPROFLEVEL"/;\
  s/CHANGEmeEXT/$EXT/" > $command;
 ./lib/OCIclient.sh $command $response;
 ./lib/FixXml.awk $response | grep "echo";
