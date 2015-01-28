@@ -49,8 +49,10 @@ if [ "$OK" == "" ]; then
     ERROR=`grep "ErrorResponse" response/login.response.xml`;
     if [ "$ERROR" == "" ]; then
         echo "Failed to login/ No response";
+        exit -1;
     else
         echo "Failed to login/ Wrong username or password";
+        exit -1;
     fi;
 fi;
 
