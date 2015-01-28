@@ -8,6 +8,8 @@ fi;
 command="xml/deluser.xml";
 response="response/deluser.response.xml";
 
+trap 'exit -1' ERR;
+
 USERID=$1;
 
 >$response;

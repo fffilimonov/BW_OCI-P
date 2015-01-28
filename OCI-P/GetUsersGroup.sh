@@ -4,6 +4,8 @@
 command="xml/getusersgroup.xml";
 response="response/getusersgroup.response.xml";
 
+trap 'exit -1' ERR;
+
 >$response;
 cat $command.tmpl |\
  sed "s/CHANGEmeENT/$ENT/;\

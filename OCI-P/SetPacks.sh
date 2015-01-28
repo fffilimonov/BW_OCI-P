@@ -9,6 +9,8 @@ fi;
 command="xml/setpackage.xml";
 response="response/setpackage.response.xml";
 
+trap 'exit -1' ERR;
+
 USERID=$1;
 
 echo $SERVICEPACKS | gawk -F ";" '{for(i=1;i<=NF;i++){print $i}}' | while read SP; do

@@ -9,6 +9,8 @@ fi;
 command="xml/adduser1.xml";
 response="response/adduser1.response.xml";
 
+trap 'exit -1' ERR;
+
 USERID=$1;
 PASS=$2;
 LAST=$3;

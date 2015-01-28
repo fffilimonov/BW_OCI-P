@@ -3,6 +3,8 @@
 command="xml/getusers.xml";
 response="response/getusers.response.xml";
 
+trap 'exit -1' ERR;
+
 >$response;
 cat $command.tmpl > $command;
 ./lib/OCIclient.sh $command $response;

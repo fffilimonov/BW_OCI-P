@@ -8,6 +8,8 @@ fi;
 command="xml/setpass.xml";
 response="response/setpass.response.xml";
 
+trap 'exit -1' ERR;
+
 USERID=$1;
 PASS=$2;
 
