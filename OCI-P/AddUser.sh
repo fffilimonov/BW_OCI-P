@@ -18,15 +18,15 @@ PHONE=$6;
 
 >$response;
 cat $command.tmpl |\
- sed "s/CHANGEmeID/"$USERID"/;\
- s/CHANGEmePASS/"$PASS"/;\
- s/CHANGEmeLAST/"$LAST"/;\
- s/CHANGEmeFIRST/"$FIRST"/;\
- s/CHANGEmeCLAST/"$LAST"/;\
- s/CHANGEmeCFIRST/"$FIRST"/;\
- s/CHANGEmeENT/"$ENT"/;\
- s/CHANGEmeGR/"$GROUP"/;\
- s/CHANGEmeDMN/"$DOMAIN"/" > $command;
+ sed "s/CHANGEmeID/$USERID/;\
+ s/CHANGEmePASS/$PASS/;\
+ s/CHANGEmeLAST/$LAST/;\
+ s/CHANGEmeFIRST/$FIRST/;\
+ s/CHANGEmeCLAST/$LAST/;\
+ s/CHANGEmeCFIRST/$FIRST/;\
+ s/CHANGEmeENT/$ENT/;\
+ s/CHANGEmeGR/$GROUP/;\
+ s/CHANGEmeDMN/$DOMAIN/" > $command;
 ./lib/OCIclient.sh $command $response;
 ./lib/FixXml.awk $response | grep "echo";
 
@@ -40,12 +40,12 @@ fi;
 
 >$response;
 cat $command.tmpl |\
- sed "s/CHANGEmeID/"$USERID"/;\
- s/CHANGEmePORT/"$USERID"/;\
- s/CHANGEmePHONE/"$PHONE"/;\
- s/CHANGEmeDMN/"$DOMAIN"/;\
- s/CHANGEmeDEVP/"$DEVPROFNAME"/;\
- s/CHANGEmeDEVL/"$DEVPROFLEVEL"/;\
+ sed "s/CHANGEmeID/$USERID/;\
+ s/CHANGEmePORT/$USERID/;\
+ s/CHANGEmePHONE/$PHONE/;\
+ s/CHANGEmeDMN/$DOMAIN/;\
+ s/CHANGEmeDEVP/$DEVPROFNAME/;\
+ s/CHANGEmeDEVL/$DEVPROFLEVEL/;\
  s/CHANGEmeEXT/$EXT/" > $command;
 ./lib/OCIclient.sh $command $response;
 ./lib/FixXml.awk $response | grep "echo";
