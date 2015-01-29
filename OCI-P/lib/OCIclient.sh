@@ -63,6 +63,11 @@ send ()
     cat $1 >&3;
     cat xml/botom.xml >&3;
     timeout -s INT 1 cat <&3 > $2;
+    ERR=`grep "ErrorResponse" $2`;
+    if [ "$ERR" != "" ]; then
+        echo "ErrorResponse";
+        exit -1;
+    fi;
 }
 
 while [ $# -ne 0 ]; do
