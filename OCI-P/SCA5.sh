@@ -28,7 +28,7 @@ for ((i=1;i<6;i++)); do
      sed "s/CHANGEmeID/$USERID/;\
      s/CHANGEmePORT/$PORT/;\
      s/CHANGEmeDMN/$DOMAIN/;\
-     s/CHANGEmeDEVP/$DEVPROF/;\
+     s/CHANGEmeDEVP/$DEVPROFNAME/;\
      s/CHANGEmeDEVL/$DEVPROFLEVEL/" > $command;
 
     ./lib/OCIclient.sh $command $response;

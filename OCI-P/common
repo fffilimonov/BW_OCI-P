@@ -3,7 +3,7 @@ trap 'exit -1' ERR;
 
 checkecho ()
 {
-    RESULT=`grep "echo"`;
+    RESULT=`egrep "command echo|command type"`;
     ERR=`echo $RESULT | grep "ErrorResponse"`;
     OK=`echo $RESULT | grep "SuccessResponse"`;
     if [ "$ERR" == "" ]; then
