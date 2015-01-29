@@ -6,8 +6,8 @@ if [ $# -ne 2 ]; then
 fi;
 
 . config;
-FILE="$1";
-RESP="$2";
+#FILE="$1";
+#RESP="$2";
 
 #Try connection and connect.
 timeout -s INT $TIMEOUT bash -c "exec 3<>/dev/tcp/$HOST/$PORT";
@@ -57,10 +57,18 @@ if [ "$OK" == "" ]; then
 fi;
 
 #Send custom req
-cat xml/head.xml >&3;
-cat $FILE >&3;
-cat xml/botom.xml >&3;
-timeout -s INT 1 cat <&3 > $RESP;
+send ()
+{
+    cat xml/head.xml >&3;
+    cat $1 >&3;
+    cat xml/botom.xml >&3;
+    timeout -s INT 1 cat <&3 > $2;
+}
+
+while [ $# -ne 0 ]; do
+    send $1 $2;
+    shift 2;
+done;
 
 #Send logout
 cat xml/logout.xml.tmpl | sed "s/CHANGEmeUSER/"$USER"/" > xml/logout.xml;
