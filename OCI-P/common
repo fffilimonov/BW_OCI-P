@@ -10,6 +10,7 @@ checkecho ()
         echo "SUCCESS";
     else
     echo "ERROR"
+    echo $RESULT;
         exit -1;
     fi;
 }
