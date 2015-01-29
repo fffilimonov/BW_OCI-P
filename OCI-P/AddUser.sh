@@ -28,28 +28,27 @@ cat $command.tmpl |\
  s/CHANGEmeENT/$ENT/;\
  s/CHANGEmeGR/$GROUP/;\
  s/CHANGEmeDMN/$DOMAIN/" > $command;
-./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | checkecho;
 
 if [ "$6" == "" ]; then
-    command="xml/adduser2.xml";
-    response="response/adduser2.response.xml";
+    command2="xml/adduser2.xml";
+    response2="response/adduser2.response.xml";
 else
-    command="xml/adduser2PSTN.xml";
-    response="response/adduser2PSTN.response.xml";
+    command2="xml/adduser2PSTN.xml";
+    response2="response/adduser2PSTN.response.xml";
 fi;
 
->$response;
-cat $command.tmpl |\
+>$response2;
+cat $command2.tmpl |\
  sed "s/CHANGEmeID/$USERID/;\
  s/CHANGEmePORT/$USERID/;\
  s/CHANGEmePHONE/$PHONE/;\
  s/CHANGEmeDMN/$DOMAIN/;\
  s/CHANGEmeDEVP/$DEVPROFNAME/;\
  s/CHANGEmeDEVL/$DEVPROFLEVEL/;\
- s/CHANGEmeEXT/$EXT/" > $command;
-./lib/OCIclient.sh $command $response;
+ s/CHANGEmeEXT/$EXT/" > $command2;
+./lib/OCIclient.sh $command $response $command2 $response2;
 ./lib/FixXml.awk $response | checkecho;
+./lib/FixXml.awk $response2 | checkecho;
 
 ./SetPacks.sh $USERID;
 ./SetPass.sh $USERID $PASS;
