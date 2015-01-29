@@ -6,10 +6,9 @@ if [ $# -lt 5 ]; then
 fi;
 
 . config;
+. common;
 command="xml/adduser1.xml";
 response="response/adduser1.response.xml";
-
-trap 'exit -1' ERR;
 
 USERID=$1;
 PASS=$2;
@@ -30,7 +29,7 @@ cat $command.tmpl |\
  s/CHANGEmeGR/$GROUP/;\
  s/CHANGEmeDMN/$DOMAIN/" > $command;
 ./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | grep "echo";
+./lib/FixXml.awk $response | checkecho;
 
 if [ "$6" == "" ]; then
     command="xml/adduser2.xml";
@@ -50,7 +49,7 @@ cat $command.tmpl |\
  s/CHANGEmeDEVL/$DEVPROFLEVEL/;\
  s/CHANGEmeEXT/$EXT/" > $command;
 ./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | grep "echo";
+./lib/FixXml.awk $response | checkecho;
 
 ./SetPacks.sh $USERID;
 ./SetPass.sh $USERID $PASS;

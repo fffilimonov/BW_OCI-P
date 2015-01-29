@@ -6,10 +6,9 @@ if [ $# -lt 1 ]; then
 fi;
 
 . config;
+. common;
 command="xml/setpackage.xml";
 response="response/setpackage.response.xml";
-
-trap 'exit -1' ERR;
 
 USERID=$1;
 
@@ -17,6 +16,5 @@ echo $SERVICEPACKS | gawk -F ";" '{for(i=1;i<=NF;i++){print $i}}' | while read S
     >$response;
     cat $command.tmpl | sed "s/CHANGEmeID/$USERID/;s/CHANGEmeSP/$SP/" > $command;
     ./lib/OCIclient.sh $command $response;
-    ./lib/FixXml.awk $response | grep "echo";
+    ./lib/FixXml.awk $response | checkecho;
 done;
-

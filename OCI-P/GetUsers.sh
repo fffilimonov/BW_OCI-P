@@ -1,9 +1,8 @@
 #!/bin/bash
 
+. common;
 command="xml/getusers.xml";
 response="response/getusers.response.xml";
-
-trap 'exit -1' ERR;
 
 >$response;
 cat $command.tmpl > $command;

@@ -1,0 +1,15 @@
+
+trap 'exit -1' ERR;
+
+checkecho ()
+{
+    RESULT=`grep "echo"`;
+    ERR=`echo $RESULT | grep "ErrorResponse"`;
+    OK=`echo $RESULT | grep "SuccessResponse"`;
+    if [ "$ERR" == "" ]; then
+        echo "SUCCESS";
+    else
+    echo "ERROR"
+        exit -1;
+    fi;
+}

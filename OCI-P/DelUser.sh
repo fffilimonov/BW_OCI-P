@@ -5,15 +5,13 @@ if [ $# -lt 1 ]; then
     exit 1;
 fi;
 
+. common;
 command="xml/deluser.xml";
 response="response/deluser.response.xml";
-
-trap 'exit -1' ERR;
 
 USERID=$1;
 
 >$response;
 cat $command.tmpl | sed "s/CHANGEmeID/$USERID/" > $command;
 ./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | grep "echo";
-
+./lib/FixXml.awk $response | checkecho;
