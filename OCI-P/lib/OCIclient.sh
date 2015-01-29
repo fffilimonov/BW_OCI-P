@@ -6,8 +6,6 @@ if [ $# -lt 2 ]; then
 fi;
 
 . config;
-#FILE="$1";
-#RESP="$2";
 
 #Try connection and connect.
 timeout -s INT $TIMEOUT bash -c "exec 3<>/dev/tcp/$HOST/$PORT";
@@ -62,7 +60,7 @@ send ()
     cat xml/head.xml >&3;
     cat $1 >&3;
     cat xml/botom.xml >&3;
-    timeout -s INT 1 cat <&3 > $2;
+    timeout -s INT $RESPTIMEOUT cat <&3 > $2;
     ERR=`grep "ErrorResponse" $2`;
     if [ "$ERR" != "" ]; then
         echo "ErrorResponse";
