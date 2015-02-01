@@ -7,16 +7,10 @@ fi;
 
 . config;
 . common;
-command="xml/cfnr.xml";
-response="response/cfnr.response.xml";
+command="xml/cfnr.xml.tmpl";
 
 USERID=$1;
 NUMBER=$2;
 
->$response;
-cat $command.tmpl |\
-sed "s/CHANGEmeID/$USERID/;\
- s/CHANGEmeNUMBER/$NUMBER/" > $command;
-
-./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | checkecho;
+export USERID NUMBER;
+./lib/OCIclient.sh $command;

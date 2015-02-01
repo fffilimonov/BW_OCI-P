@@ -1,10 +1,7 @@
 #!/bin/bash
 
 . common;
-command="xml/getreg.xml";
+command="xml/getreg.xml.tmpl";
 response="response/getreg.response.xml";
 
->$response;
-cat $command.tmpl > $command;
-./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | ./lib/GetReg.awk;
+./lib/OCIclient.sh $command | ./lib/GetReg.awk;

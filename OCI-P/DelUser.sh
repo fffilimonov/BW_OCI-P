@@ -6,12 +6,9 @@ if [ $# -lt 1 ]; then
 fi;
 
 . common;
-command="xml/deluser.xml";
-response="response/deluser.response.xml";
+command="xml/deluser.xml.tmpl";
 
 USERID=$1;
 
->$response;
-cat $command.tmpl | sed "s/CHANGEmeID/$USERID/" > $command;
-./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | checkecho;
+export USERID;
+./lib/OCIclient.sh $command;

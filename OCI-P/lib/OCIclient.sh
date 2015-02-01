@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# -lt 2 ]; then
-    echo "Usage $0 FILE RESPFILE";
+if [ $# -lt 1 ]; then
+    echo "Usage $0 command";
     exit -1;
 fi;
 
@@ -9,27 +9,60 @@ fi;
 
 #Functions
 
-sendlogout ()
+sgen ()
 {
-    cat xml/logout.xml.tmpl | sed "s/CHANGEmeUSER/"$USER"/" > xml/logout.xml;
-    cat xml/head.xml >&3;
-    cat xml/logout.xml >&3;
-    cat xml/botom.xml >&3;
-    exec 3>&-;
+    cat /dev/urandom| tr -dc 'a-zA-Z0-9' | fold -w9| head -n1;
 }
 
 send ()
 {
-    cat xml/head.xml >&3;
-    cat $1 >&3;
-    cat xml/botom.xml >&3;
-    timeout -s INT $TIMEOUT head -2 <&3 > $2;
-    ERR=`grep "ErrorResponse" $2`;
-    if [ "$ERR" != "" ]; then
-        echo "ErrorResponse";
-        sendlogout;
-        exit -1;
+    cat xml/head.xml.tmpl | sed "s/CHANGEmeSESSIONID/$SESSION/" >&3;
+    cat $1 | sed "s/CHANGEmeRESP/$RESPONSE/;\
+     s/CHANGEmeUSER/$OCI_LOGINID/;\
+     s/CHANGEmeID/$USERID/;\
+     s/CHANGEmeNUMBER/$NUMBER/;\
+     s/CHANGEme1PORT/$PORT1/;\
+     s/CHANGEme2PORT/$PORT2/;\
+     s/CHANGEme3PORT/$PORT3/;\
+     s/CHANGEme4PORT/$PORT4/;\
+     s/CHANGEme5PORT/$PORT5/;\
+     s/CHANGEmeDMN/$DOMAIN/;\
+     s/CHANGEmeDEVP/$DEVPROFNAME/;\
+     s/CHANGEmeDEVL/$DEVPROFLEVEL/;\
+     s/CHANGEmePASS/$PASS/;\
+     s/CHANGEmeSP/$SERVICEPACK/;\
+     s/CHANGEmeWPASS/$WPASS/;\
+     s/CHANGEmeLAST/$LAST/;\
+     s/CHANGEmeFIRST/$FIRST/;\
+     s/CHANGEmeCLAST/$LAST/;\
+     s/CHANGEmeCFIRST/$FIRST/;\
+     s/CHANGEmeENT/$ENT/;\
+     s/CHANGEmeGR/$GROUP/;\
+     s/CHANGEmePORT/$USERID/;\
+     s/CHANGEmePHONE/$PHONE/;\
+     s/CHANGEmeEXT/$EXT/;\
+     " >&3;
+    cat xml/botom.xml.tmpl >&3;
+    if [ "$2" != "1" ]; then
+        timeout -s INT $TIMEOUT head -2 <&3;
     fi;
+}
+
+sendlogout ()
+{
+    send xml/logout.xml.tmpl 1;
+    exec 3>&-;
+    exit $1;
+}
+
+fixxml ()
+{
+    gawk 'BEGIN {RS="><"} {printf $0">\n<"}';
+}
+
+getnonce ()
+{
+    gawk '{if ($0~"nonce") {split ($0,value,"[>|<]");printf ("%s\n",value[3]);}}';
 }
 
 #Try connection and connect.
@@ -42,51 +75,43 @@ fi;
 exec 3<>/dev/tcp/$HOST/$PORT;
 
 #Set sessionID
-SESSION=`date +%s`;
-cat xml/head.xml.tmpl | sed "s/CHANGEmeSESSIONID/"$SESSION"/" > xml/head.xml;
-cat xml/botom.xml.tmpl > xml/botom.xml;
-
+SESSION=$(sgen;);
 #Send Auth
-cat xml/auth.xml.tmpl | sed "s/CHANGEmeUSER/"$OCI_LOGINID"/" > xml/auth.xml;
-cat xml/head.xml >&3;
-cat xml/auth.xml >&3;
-cat xml/botom.xml >&3;
-timeout -s INT $TIMEOUT head -2 <&3 > response/auth.response.xml;
-
+#send xml/auth.xml.tmpl
+NONCE=$(send xml/auth.xml.tmpl  | fixxml | getnonce);
 #Hash pass
-NONCE=`cat response/auth.response.xml | ./lib/FixXml.awk | ./lib/GetNonce.awk`;
 if [ "$NONCE" == "" ]; then
     echo "No auth response";
-    exec 3>&-;
-    exit -1;
+    sendlogout 1;
 fi;
 HPASS=`echo -n $OCI_PASSWORD | sha1sum | gawk '{print $1}'`;
 RESPONSE=`echo -n "$NONCE:$HPASS" | md5sum| gawk '{print $1}'`;
-
 #Send login
-cat xml/login.xml.tmpl | sed "s/CHANGEmePASS/"$RESPONSE"/;s/CHANGEmeUSER/"$OCI_LOGINID"/" > xml/login.xml;
-cat xml/head.xml >&3;
-cat xml/login.xml >&3;
-cat xml/botom.xml >&3;
-timeout -s INT $TIMEOUT head -2 <&3 > response/login.response.xml;
-OK=`grep "LoginResponse14sp4" response/login.response.xml`;
+LRESP=$(send xml/login.xml.tmpl);
+OK=`echo $LRESP | grep "LoginResponse14sp4"`;
 if [ "$OK" == "" ]; then
-    ERROR=`grep "ErrorResponse" response/login.response.xml`;
+    ERROR=`echo $LRESP | grep "ErrorResponse"`;
     if [ "$ERROR" == "" ]; then
         echo "Failed to login/ No response";
-        exec 3>&-;
-        exit -1;
+        sendlogout 1;
     else
         echo "Failed to login/ Wrong username or password";
-        exec 3>&-;
-        exit -1;
+        sendlogout 1;
     fi;
 fi;
 
 #Send custom req
-while [ $# -ne 0 ]; do
-    send $1 $2;
-    shift 2;
+while true; do
+    if [ $# -ne 0 ]; then
+        nCOMMAND="$1";
+        shift;
+        send $nCOMMAND | fixxml | awk 'BEGIN {i=0} {if ($0~"ErrorResponse") {i++}print $0}END{if (NR==0) {i++};exit i}';
+        if [ $? -ne 0 ]; then
+            sendlogout 1;
+        fi;
+    else
+        break;
+    fi;
 done;
 
 #Send logout

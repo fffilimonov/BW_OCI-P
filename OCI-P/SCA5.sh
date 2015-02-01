@@ -7,34 +7,21 @@ fi;
 
 . config;
 . common;
-command="xml/sca5.xml";
-response="response/sca5.response.xml";
+command="xml/sca5.xml.tmpl";
 
 USERID=$1;
 
->$response;
-cat $command.tmpl |\
- sed "s/CHANGEmeID/$USERID/" > $command;
+command1="xml/sca5add1.xml.tmpl";
+command2="xml/sca5add2.xml.tmpl";
+command3="xml/sca5add3.xml.tmpl";
+command4="xml/sca5add4.xml.tmpl";
+command5="xml/sca5add5.xml.tmpl";
 
-commandt="xml/sca5add.xml";
-responset="response/sca5add.response.xml";
+PORT1=${USERID}1;
+PORT2=${USERID}2;
+PORT3=${USERID}3;
+PORT4=${USERID}4;
+PORT5=${USERID}5;
 
-for ((i=1;i<6;i++)); do
-    PORT=${USERID}$i;
-    >${responset}${i};
-    cat $commandt.tmpl |\
-     sed "s/CHANGEmeID/$USERID/;\
-     s/CHANGEmePORT/$PORT/;\
-     s/CHANGEmeDMN/$DOMAIN/;\
-     s/CHANGEmeDEVP/$DEVPROFNAME/;\
-     s/CHANGEmeDEVL/$DEVPROFLEVEL/" > ${commandt}${i};
-done;
-
-./lib/OCIclient.sh $command $response ${commandt}1 ${responset}1 ${commandt}2 ${responset}2 ${commandt}3 ${responset}3 ${commandt}4 ${responset}4 ${commandt}5 ${responset}5;
-./lib/FixXml.awk $response | checkecho;
-./lib/FixXml.awk ${responset}1 | checkecho;
-./lib/FixXml.awk ${responset}2 | checkecho;
-./lib/FixXml.awk ${responset}3 | checkecho;
-./lib/FixXml.awk ${responset}4 | checkecho;
-./lib/FixXml.awk ${responset}5 | checkecho;
-
+export USERID PORT1 PORT2 PORT3 PORT4 PORT5;
+./lib/OCIclient.sh $command $command1 $command2 $command3 $command4 $command5;

@@ -6,13 +6,10 @@ if [ $# -lt 2 ]; then
 fi;
 
 . common;
-command="xml/setpass.xml";
-response="response/setpass.response.xml";
+command="xml/setpass.xml.tmpl";
 
 USERID=$1;
 PASS=$2;
 
->$response;
-cat $command.tmpl | sed "s/CHANGEmeID/$USERID/;s/CHANGEmePASS/$PASS/" > $command;
-./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | checkecho;
+export USERID PASS;
+./lib/OCIclient.sh $command;

@@ -1,10 +1,7 @@
 #!/bin/bash
 
 . common;
-command="xml/getusers.xml";
+command="xml/getusers.xml.tmpl";
 response="response/getusers.response.xml";
 
->$response;
-cat $command.tmpl > $command;
-./lib/OCIclient.sh $command $response;
-./lib/FixXml.awk $response | ./lib/GetUsers.awk;
+./lib/OCIclient.sh $command | ./lib/GetUsers.awk;
