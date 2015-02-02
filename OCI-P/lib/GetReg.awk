@@ -2,7 +2,7 @@
 
 BEGIN {
     total=0;
-    printf ("USERID\t\tUSER-AGENT\n");
+    printf ("%-20s%-20s%-12s%-30s%-20s\n","ENT","GROUP","USERID","PORT","USER-AGENT");
 }
 
 {
@@ -10,9 +10,17 @@ BEGIN {
         total++;
         for (i=1;i<=15;i++) {
             getline line;
-            if (i==3||i==15) {
+            if (i==1||i==2||i==15) {
                 split (line,value,"[>|<]");
-                printf ("%s\t",value[3]);
+                printf ("%-20s",value[3]);
+            }
+            if (i==3) {
+                split (line,value,"[>|<]");
+                printf ("%-12s",value[3]);
+            }
+            if (i==4) {
+                split (line,value,"[>|<]");
+                printf ("%-30s",value[3]);
             }
         }
         printf ("\n");
