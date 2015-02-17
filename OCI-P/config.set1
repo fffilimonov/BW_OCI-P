@@ -10,4 +10,3 @@ DEVPROFNAME="deviceprofile";
 DEVPROFLEVEL="Service Provider";
 #DEVPROFLEVEL="Group";
 DOMAIN="voip.broad.com";
-SERVICEPACK="BASE";

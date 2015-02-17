@@ -7,9 +7,9 @@ fi;
 
 . config;
 . common;
-command="xml/setpackage.xml.tmpl";
+command="xml/services.xml.tmpl";
 
 USERID=$1;
 
-export USERID SERVICEPACK;
+export USERID;
 ./lib/OCIclient.sh $command;
